@@ -50,6 +50,7 @@
     border: 1px dashed rgba(201,168,76,0.4); border-radius: 8px; color: var(--gold);
     font-size: 12px; cursor: pointer; text-align: center; min-height: 44px;
   }
+  .sidebar-help { color: var(--muted); font-size: 11px; line-height: 1.5; padding: 0 18px 14px; }
 
   /* ── MAIN ── */
   .main { margin-left: 260px; min-height: 100vh; transition: margin 0.3s ease; }
@@ -66,6 +67,7 @@
   .trip-hero-stat { color: rgba(255,255,255,0.6); font-size: 13px; }
   .trip-hero-stat span { color: var(--white); font-weight: 500; margin-right: 4px; }
   .btn-edit-trip { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; min-height: 44px; font-size: 12px; }
+  .hero-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 
   /* ── TABS ── */
   .trip-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--sand); padding: 0 48px; position: sticky; top: 0; z-index: 10; overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -127,7 +129,16 @@
   .modal h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 16px; }
   .form-group { margin-bottom: 16px; }
   .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-  .form-group input { width: 100%; padding: 10px 12px; border: 1px solid var(--sand); border-radius: 8px; font-size: 14px; }
+  .form-group input, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--sand); border-radius: 8px; font-size: 14px; }
+  .form-group textarea { min-height: 260px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.5; }
+  .text-modal { max-width: 760px; }
+  .modal-note { color: var(--muted); font-size: 12px; line-height: 1.6; margin-bottom: 14px; }
+  .file-label {
+    display: inline-flex; align-items: center; justify-content: center; padding: 8px 14px;
+    border-radius: 7px; border: 1px solid var(--sand); cursor: pointer; min-height: 40px;
+    font-size: 13px;
+  }
+  .file-label input { display: none; }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
   
   .place-modal { background: var(--white); border-radius: 20px; width: 90%; max-width: 500px; overflow: hidden; position: relative; }
@@ -147,6 +158,8 @@
     .trip-hero { padding: 24px 20px; }
     .trip-hero-top { align-items: center; }
     .trip-hero h2 { font-size: 24px; }
+    .hero-actions { width: 100%; justify-content: stretch; }
+    .hero-actions button { flex: 1 1 140px; }
     .trip-tabs { padding: 0 16px; }
     .itinerary-body { padding: 20px 16px; }
     .map-body { padding: 16px; height: calc(100vh - 150px); }
@@ -170,7 +183,8 @@
   <div class="sidebar-section">
     <div class="sidebar-section-label">我的旅程</div>
     <div id="trip-list"></div>
-    <button class="btn-add-trip" onclick="alert('新增旅程功能可在此擴充')">＋ 新增旅遊規劃</button>
+    <button class="btn-add-trip" onclick="createTrip()">＋ 新增旅遊規劃</button>
+    <div class="sidebar-help">行程會自動存在這台裝置的瀏覽器中。上傳 GitHub 後也可以用同一份網頁開啟。</div>
   </div>
 </div>
 
@@ -192,6 +206,26 @@
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-edit-trip')">取消</button>
       <button class="btn-save" onclick="saveTripInfo()">儲存變更</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEXT IMPORT / EXPORT MODAL -->
+<div class="modal-overlay" id="modal-text-plan">
+  <div class="modal text-modal">
+    <button class="close-sidebar-btn" onclick="closeModal('modal-text-plan')" style="position:absolute;top:12px;right:12px;color:#000;display:block;">✕</button>
+    <h3>用文字編輯整份行程</h3>
+    <p class="modal-note">把下面 JSON 複製給 AI 修改，再貼回來按「套用文字計畫」。也可以上傳 .txt 或 .json。請保留欄位名稱，這樣地圖、時間與聯絡資訊才能自動變回畫面上的行程。</p>
+    <div class="form-group">
+      <label>整份旅遊規劃文字</label>
+      <textarea id="text-plan-input"></textarea>
+    </div>
+    <div id="text-plan-status" class="modal-note"></div>
+    <div class="modal-actions" style="flex-wrap:wrap;">
+      <label class="file-label">上傳文字檔 <input type="file" id="text-plan-file" accept=".txt,.json,application/json,text/plain"></label>
+      <button class="btn-cancel" onclick="copyTextPlan()">複製文字</button>
+      <button class="btn-cancel" onclick="downloadTextPlan()">下載 JSON</button>
+      <button class="btn-save" onclick="applyTextPlan()">套用文字計畫</button>
     </div>
   </div>
 </div>
@@ -301,6 +335,10 @@ let activeTrip = {
   ]
 };
 
+const STORAGE_KEY = "travelPlannerData.v2";
+let trips = [activeTrip];
+let activeTripId = activeTrip.id;
+
 // ─── 狀態與渲染 ──────────────────────────────────────────
 let activeTab = 'itinerary';
 let editingEventId = null;
@@ -308,19 +346,74 @@ let mainMapInstance = null;
 let modalMapInstance = null;
 let modalMarker = null;
 
+loadTravelData();
+
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+function normalizeTrip(trip) {
+  const clean = {
+    id: trip.id || uid(),
+    name: trip.name || "新的旅遊規劃",
+    flag: trip.flag || "🌏",
+    start: trip.start || "",
+    end: trip.end || "",
+    days: Array.isArray(trip.days) ? trip.days : []
+  };
+  clean.days = clean.days.map((day, index) => ({
+    label: day.label || `Day ${index + 1}`,
+    date: day.date || "",
+    title: day.title || "新的一天",
+    events: Array.isArray(day.events) ? day.events.map(event => ({
+      id: event.id || uid(),
+      time: event.time || "",
+      type: event.type || "活動",
+      name: event.name || "新行程",
+      desc: event.desc || event.communication || "",
+      places: Array.isArray(event.places) ? event.places : []
+    })) : []
+  }));
+  return clean;
+}
+
+function loadTravelData() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && Array.isArray(saved.trips) && saved.trips.length) {
+      trips = saved.trips.map(normalizeTrip);
+      activeTripId = saved.activeTripId || trips[0].id;
+      activeTrip = trips.find(t => t.id === activeTripId) || trips[0];
+      activeTripId = activeTrip.id;
+    }
+  } catch (error) {
+    console.warn("Could not load saved travel data", error);
+  }
+}
+
+function saveTravelData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ trips, activeTripId }));
+}
+
+function setActiveTrip(id) {
+  activeTrip = trips.find(t => t.id === id) || trips[0];
+  activeTripId = activeTrip.id;
+  editingEventId = null;
+  mainMapInstance = null;
+  renderApp();
+  if (window.innerWidth <= 768) toggleSidebar();
+}
+
 function renderApp() {
   const t = activeTrip;
-  document.getElementById('trip-list').innerHTML = `
-    <div class="trip-item active">
-      <div class="trip-flag">${t.flag}</div>
+  saveTravelData();
+  document.getElementById('trip-list').innerHTML = trips.map(trip => `
+    <div class="trip-item ${trip.id === activeTripId ? 'active' : ''}" onclick="setActiveTrip('${esc(trip.id)}')">
+      <div class="trip-flag">${esc(trip.flag || '🌏')}</div>
       <div class="trip-item-info">
-        <div class="trip-item-name">${esc(t.name)}</div>
-        <div class="trip-item-dates">${esc(t.start)} → ${esc(t.end)}</div>
+        <div class="trip-item-name">${esc(trip.name)}</div>
+        <div class="trip-item-dates">${esc(trip.start || '未定')} → ${esc(trip.end || '未定')}</div>
       </div>
-    </div>`;
+    </div>`).join('');
 
   document.getElementById('trip-detail').innerHTML = `
     <div class="trip-hero">
@@ -332,7 +425,10 @@ function renderApp() {
             <h2>${esc(t.name)}</h2>
           </div>
         </div>
-        <button class="btn-edit-trip" onclick="openEditTripInfo()">✏️ 編輯基本資料</button>
+        <div class="hero-actions">
+          <button class="btn-edit-trip" onclick="openEditTripInfo()">✏️ 編輯基本資料</button>
+          <button class="btn-edit-trip" onclick="openTextPlan()">📝 文字匯入/匯出</button>
+        </div>
       </div>
     </div>
     <div class="trip-tabs">
@@ -464,6 +560,123 @@ function saveEditEvent(evId, di) {
   ev.places = document.getElementById('ef-places').value.split(',').map(s=>s.trim()).filter(Boolean);
   editingEventId = null; renderApp();
 }
+
+function createTrip() {
+  const today = new Date().toISOString().slice(0, 10);
+  const trip = normalizeTrip({
+    id: uid(),
+    name: "新的旅遊規劃",
+    flag: "🌏",
+    start: today,
+    end: "",
+    days: [
+      { label: "Day 1", date: "", title: "新的一天", events: [] }
+    ]
+  });
+  trips.unshift(trip);
+  activeTrip = trip;
+  activeTripId = trip.id;
+  activeTab = "itinerary";
+  renderApp();
+  openEditTripInfo();
+}
+
+function openTextPlan() {
+  document.getElementById('text-plan-input').value = exportTextPlan(activeTrip);
+  document.getElementById('text-plan-status').textContent = "";
+  document.getElementById('modal-text-plan').classList.add('open');
+}
+
+function exportTextPlan(trip) {
+  return JSON.stringify({
+    name: trip.name || "",
+    flag: trip.flag || "🌏",
+    start: trip.start || "",
+    end: trip.end || "",
+    days: (trip.days || []).map(day => ({
+      label: day.label || "",
+      date: day.date || "",
+      title: day.title || "",
+      events: (day.events || []).map(event => ({
+        time: event.time || "",
+        type: event.type || "活動",
+        name: event.name || "",
+        desc: event.desc || "",
+        places: event.places || []
+      }))
+    }))
+  }, null, 2);
+}
+
+function parseTextPlan(rawText) {
+  const data = JSON.parse(rawText);
+  if (!data || typeof data !== "object") throw new Error("內容不是有效的 JSON。");
+
+  const sourceDays = Array.isArray(data.days) ? data.days : [];
+  const trip = normalizeTrip({
+    id: activeTrip.id,
+    name: data.name || data.tripName || activeTrip.name,
+    flag: data.flag || activeTrip.flag || "🌏",
+    start: data.start || data.startDate || activeTrip.start || "",
+    end: data.end || data.endDate || activeTrip.end || "",
+    days: sourceDays.map((day, index) => ({
+      label: day.label || `Day ${index + 1}`,
+      date: day.date || "",
+      title: day.title || day.city || `Day ${index + 1}`,
+      events: (Array.isArray(day.events) ? day.events : (Array.isArray(day.items) ? day.items : [])).map(item => ({
+        id: item.id || uid(),
+        time: item.time || "",
+        type: item.type || item.category || "活動",
+        name: item.name || item.title || "",
+        desc: item.desc || item.notes || item.communication || "",
+        places: Array.isArray(item.places) ? item.places : (item.location ? [item.location] : [])
+      }))
+    }))
+  });
+
+  if (!trip.days.length) throw new Error("找不到 days 陣列。");
+  return trip;
+}
+
+async function copyTextPlan() {
+  const input = document.getElementById('text-plan-input');
+  input.value = exportTextPlan(activeTrip);
+  await navigator.clipboard.writeText(input.value);
+  document.getElementById('text-plan-status').textContent = "已複製，可以貼給 AI 修改。";
+}
+
+function downloadTextPlan() {
+  const blob = new Blob([exportTextPlan(activeTrip)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${activeTrip.name || 'travel-plan'}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function applyTextPlan() {
+  const status = document.getElementById('text-plan-status');
+  try {
+    const imported = parseTextPlan(document.getElementById('text-plan-input').value);
+    const index = trips.findIndex(t => t.id === activeTripId);
+    trips[index] = imported;
+    activeTrip = imported;
+    activeTripId = imported.id;
+    editingEventId = null;
+    closeModal('modal-text-plan');
+    renderApp();
+  } catch (error) {
+    status.textContent = `匯入失敗：${error.message}`;
+  }
+}
+
+document.getElementById('text-plan-file').addEventListener('change', async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('text-plan-input').value = await file.text();
+  document.getElementById('text-plan-status').textContent = "文字檔已載入，確認內容後按「套用文字計畫」。";
+});
 
 // ─── Leaflet 地圖 ──────────────────────────────────────────
 function initMainMap() {
