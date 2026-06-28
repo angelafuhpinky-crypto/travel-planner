@@ -1,0 +1,873 @@
+{
+  "name": "荷蘭/比利時/德國之旅",
+  "flag": "🇳🇱",
+  "start": "2026-08-03",
+  "end": "2026-08-16",
+  "days": [
+    {
+      "label": "Day 1",
+      "date": "8/3",
+      "title": "抵達阿姆斯特丹・Zaanse Schans 風車村",
+      "events": [
+        {
+          "time": "07:00 - 08:30",
+          "type": "航班",
+          "name": "抵達 Amsterdam Airport Schiphol",
+          "desc": "辦理入境、領行李。第一天很早抵達，後面行程保留彈性。",
+          "places": [
+            "Amsterdam Airport Schiphol"
+          ]
+        },
+        {
+          "time": "08:30 - 09:45",
+          "type": "交通",
+          "name": "前往阿姆斯特丹飯店寄放行李",
+          "desc": "Schiphol 到 Amsterdam Centraal / Zuid 可搭 NS 火車，使用 OVpay 或 NS App 查詢即可。",
+          "places": [
+            "Amsterdam Airport Schiphol",
+            "Amsterdam Centraal",
+            "Amsterdam Zuid"
+          ]
+        },
+        {
+          "time": "10:15 - 11:15",
+          "type": "交通",
+          "name": "阿姆斯特丹前往 Zaanse Schans",
+          "desc": "可搭火車到 Zaandijk Zaanse Schans 後步行約 15 分鐘，或搭巴士前往。第一天不要買太緊的接駁票。",
+          "places": [
+            "Amsterdam Centraal",
+            "Zaandijk Zaanse Schans",
+            "Zaanse Schans"
+          ]
+        },
+        {
+          "time": "11:15 - 14:00",
+          "type": "景點",
+          "name": "Zaanse Schans 風車村",
+          "desc": "看風車、木鞋、起司店與河岸風景。若爸媽累，可縮短停留時間。",
+          "places": [
+            "Zaanse Schans"
+          ]
+        },
+        {
+          "time": "14:00 - 15:00",
+          "type": "交通",
+          "name": "返回阿姆斯特丹",
+          "desc": "回飯店休息、正式 check-in。",
+          "places": [
+            "Zaanse Schans",
+            "Amsterdam City Centre"
+          ]
+        },
+        {
+          "time": "16:30 - 20:00",
+          "type": "活動",
+          "name": "休息、晚餐與附近散步",
+          "desc": "抵達日晚上不要排正式景點，買水、辦網路、確認交通與隔天票券即可。",
+          "places": [
+            "Amsterdam City Centre",
+            "Amsterdam Canal Ring"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 2",
+      "date": "8/4",
+      "title": "Van Gogh Museum・運河與 Anne Frank House",
+      "events": [
+        {
+          "time": "09:30 - 12:00",
+          "type": "景點",
+          "name": "Van Gogh Museum",
+          "desc": "需先買指定時段票，建議選 09:30 - 10:30 入場。不要同天再塞 Rijksmuseum。",
+          "places": [
+            "Van Gogh Museum",
+            "Museumplein"
+          ]
+        },
+        {
+          "time": "12:00 - 13:30",
+          "type": "午餐",
+          "name": "Museumplein / De Pijp 午餐",
+          "desc": "午餐後留一點休息時間，避免下午到晚上太滿。",
+          "places": [
+            "Museumplein",
+            "De Pijp"
+          ]
+        },
+        {
+          "time": "14:00 - 16:00",
+          "type": "景點",
+          "name": "Jordaan、九小街與運河區散步",
+          "desc": "適合慢慢逛街、拍照、喝咖啡。",
+          "places": [
+            "Jordaan",
+            "The Nine Streets",
+            "Amsterdam Canal Ring"
+          ]
+        },
+        {
+          "time": "16:30 - 17:45",
+          "type": "景點",
+          "name": "阿姆斯特丹運河遊船",
+          "desc": "建議排傍晚前，結束後吃簡單晚餐再去 Anne Frank House。",
+          "places": [
+            "Amsterdam Canal Cruise"
+          ]
+        },
+        {
+          "time": "18:00 - 19:00",
+          "type": "晚餐",
+          "name": "Jordaan / 市中心簡單晚餐",
+          "desc": "晚餐不要排太遠，避免趕不上 Anne Frank House 的入場時段。",
+          "places": [
+            "Jordaan",
+            "Amsterdam City Centre"
+          ]
+        },
+        {
+          "time": "19:30 - 19:45",
+          "type": "景點",
+          "name": "Anne Frank House",
+          "desc": "已訂 19:30 - 19:45 入場，請提早抵達附近。",
+          "places": [
+            "Anne Frank House"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 3",
+      "date": "8/5",
+      "title": "前往 Delft・宿舍放行李與 IKEA 採買",
+      "events": [
+        {
+          "time": "09:00 - 10:30",
+          "type": "交通",
+          "name": "阿姆斯特丹退房前往 Delft",
+          "desc": "原本這天排 Gouda 起司市集不可行，因為 2026/08/05 是星期三。建議先把大行李送到 Delft。",
+          "places": [
+            "Amsterdam Centraal",
+            "Delft Station"
+          ]
+        },
+        {
+          "time": "10:30 - 12:00",
+          "type": "住宿",
+          "name": "宿舍 / 住宿寄放大行李",
+          "desc": "先把大行李安頓好，後面去 Gouda、鹿特丹與跨國段都會輕鬆很多。",
+          "places": [
+            "Delft City Centre",
+            "TU Delft"
+          ]
+        },
+        {
+          "time": "12:00 - 13:30",
+          "type": "午餐",
+          "name": "Delft 老城午餐",
+          "desc": "輕鬆吃午餐，順便熟悉市中心。",
+          "places": [
+            "Delft City Centre"
+          ]
+        },
+        {
+          "time": "13:30 - 15:30",
+          "type": "景點",
+          "name": "Delft 老城與 TU Delft 周邊",
+          "desc": "讓爸媽先看你未來生活圈：新教堂廣場、運河、市集區與校園路線。",
+          "places": [
+            "Delft City Centre",
+            "Nieuwe Kerk Delft",
+            "TU Delft"
+          ]
+        },
+        {
+          "time": "16:00 - 18:30",
+          "type": "購物",
+          "name": "IKEA Delft 採買生活用品",
+          "desc": "可買床包、棉被、枕頭、衣架、收納、清潔用品。大件物品今天處理最順。",
+          "places": [
+            "IKEA Delft"
+          ]
+        },
+        {
+          "time": "19:00 - 21:00",
+          "type": "晚餐",
+          "name": "Delft / The Hague 晚餐",
+          "desc": "建議住 Delft 或海牙，同一區連住可減少搬行李。",
+          "places": [
+            "Delft City Centre",
+            "The Hague"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 4",
+      "date": "8/6",
+      "title": "Gouda 起司市集・海牙與 Scheveningen 海灘",
+      "events": [
+        {
+          "time": "08:15 - 09:15",
+          "type": "交通",
+          "name": "Delft 前往 Gouda",
+          "desc": "2026/08/06 是星期四，適合排 Gouda Cheese Market。建議早一點到 Markt 卡位。",
+          "places": [
+            "Delft Station",
+            "Gouda Station"
+          ]
+        },
+        {
+          "time": "10:00 - 12:30",
+          "type": "景點",
+          "name": "Gouda Cheese Market 起司市集",
+          "desc": "起司市集通常在週四上午舉行，2026 場次仍建議出發前再確認官方日期。",
+          "places": [
+            "Gouda Cheese Market",
+            "Markt Gouda"
+          ]
+        },
+        {
+          "time": "12:30 - 14:00",
+          "type": "午餐",
+          "name": "Gouda 午餐與老城散步",
+          "desc": "簡單吃午餐、買起司、逛市政廳周邊。",
+          "places": [
+            "Gouda City Centre"
+          ]
+        },
+        {
+          "time": "14:00 - 15:15",
+          "type": "交通",
+          "name": "Gouda 前往 The Hague",
+          "desc": "搭 NS 火車轉往海牙，下午行程保持輕鬆。",
+          "places": [
+            "Gouda Station",
+            "Den Haag Centraal"
+          ]
+        },
+        {
+          "time": "15:30 - 17:00",
+          "type": "景點",
+          "name": "海牙市區",
+          "desc": "可逛 Binnenhof 周邊、Mauritshuis 外觀，若想入內則需縮短海灘時間。",
+          "places": [
+            "The Hague",
+            "Binnenhof",
+            "Mauritshuis"
+          ]
+        },
+        {
+          "time": "17:30 - 20:00",
+          "type": "景點",
+          "name": "Scheveningen 海灘",
+          "desc": "傍晚散步、看海、吃晚餐。從海牙市區搭電車前往。",
+          "places": [
+            "Scheveningen Beach"
+          ]
+        },
+        {
+          "time": "20:00 - 21:00",
+          "type": "交通",
+          "name": "返回 Delft / The Hague 住宿",
+          "desc": "隔天要去鹿特丹與布魯塞爾，晚上不要太晚。",
+          "places": [
+            "Delft City Centre",
+            "The Hague"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 5",
+      "date": "8/7",
+      "title": "鹿特丹・Kinderdijk 小孩堤防・前往布魯塞爾",
+      "events": [
+        {
+          "time": "08:45 - 09:30",
+          "type": "交通",
+          "name": "Delft / 海牙前往鹿特丹",
+          "desc": "建議大行李已留在 Delft，只帶布魯塞爾、布魯日、科隆段需要的小行李。",
+          "places": [
+            "Delft Station",
+            "Den Haag Centraal",
+            "Rotterdam Centraal"
+          ]
+        },
+        {
+          "time": "09:45 - 11:30",
+          "type": "景點",
+          "name": "Markthal 與方塊屋",
+          "desc": "兩個景點距離近，適合快速看鹿特丹建築。若要去 Kinderdijk，鹿特丹市區只能簡短停留。",
+          "places": [
+            "Markthal Rotterdam",
+            "Cube Houses Rotterdam",
+            "Rotterdam City Centre"
+          ]
+        },
+        {
+          "time": "12:00 - 13:00",
+          "type": "交通",
+          "name": "鹿特丹前往 Kinderdijk",
+          "desc": "優先查 Waterbus / WaterShuttle 夏季班次；若班次不順，改用火車加巴士備案。",
+          "places": [
+            "Rotterdam Erasmusbrug",
+            "Kinderdijk"
+          ]
+        },
+        {
+          "time": "13:00 - 15:15",
+          "type": "景點",
+          "name": "Kinderdijk 小孩堤防",
+          "desc": "看 UNESCO 風車群，可步行或搭園區船。若天氣差，縮短停留並提早回鹿特丹。",
+          "places": [
+            "Kinderdijk Windmills"
+          ]
+        },
+        {
+          "time": "15:15 - 16:30",
+          "type": "交通",
+          "name": "返回 Rotterdam Centraal",
+          "desc": "預留時間取行李、買水與找月台。不要壓線接國際火車。",
+          "places": [
+            "Kinderdijk",
+            "Rotterdam Centraal"
+          ]
+        },
+        {
+          "time": "17:00 - 19:30",
+          "type": "交通",
+          "name": "鹿特丹前往布魯塞爾",
+          "desc": "國際火車建議先訂票，選 17:00 後比較穩。抵達 Bruxelles-Midi / Brussel-Zuid 後進市中心住宿。",
+          "places": [
+            "Rotterdam Centraal",
+            "Brussels Midi Station",
+            "Brussels Central Station"
+          ]
+        },
+        {
+          "time": "20:00 - 21:00",
+          "type": "晚餐",
+          "name": "布魯塞爾抵達晚餐",
+          "desc": "這天移動較多，晚上只安排住宿附近吃飯。",
+          "places": [
+            "Brussels City Centre"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 6",
+      "date": "8/8",
+      "title": "布魯塞爾市區一日",
+      "events": [
+        {
+          "time": "09:30 - 10:30",
+          "type": "景點",
+          "name": "Grand Place 大廣場",
+          "desc": "布魯塞爾最經典景點，建議早上先去。",
+          "places": [
+            "Grand Place Brussels"
+          ]
+        },
+        {
+          "time": "10:30 - 12:00",
+          "type": "景點",
+          "name": "皇家聖休伯特拱廊",
+          "desc": "適合逛巧克力店、咖啡廳。",
+          "places": [
+            "Galeries Royales Saint-Hubert"
+          ]
+        },
+        {
+          "time": "12:00 - 13:30",
+          "type": "午餐",
+          "name": "尿尿小童與市中心小吃",
+          "desc": "附近可吃薯條、鬆餅，午餐節奏輕鬆即可。",
+          "places": [
+            "Manneken Pis",
+            "Brussels City Centre"
+          ]
+        },
+        {
+          "time": "14:00 - 16:30",
+          "type": "景點",
+          "name": "Mont des Arts 與皇宮周邊",
+          "desc": "拍照、散步，節奏不用太趕。",
+          "places": [
+            "Mont des Arts",
+            "Royal Palace of Brussels"
+          ]
+        },
+        {
+          "time": "16:30 - 18:00",
+          "type": "活動",
+          "name": "咖啡、巧克力與休息",
+          "desc": "給爸媽一段休息時間，也方便調整隔天布魯日交通。",
+          "places": [
+            "Brussels City Centre"
+          ]
+        },
+        {
+          "time": "18:30 - 20:30",
+          "type": "晚餐",
+          "name": "淡菜鍋晚餐",
+          "desc": "可安排淡菜鍋、比利時啤酒、鬆餅甜點。住宿建議 Brussels Central / Grand Place 附近。",
+          "places": [
+            "Brussels City Centre"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 7",
+      "date": "8/9",
+      "title": "布魯日・童話小鎮住一晚",
+      "events": [
+        {
+          "time": "09:00 - 10:30",
+          "type": "交通",
+          "name": "布魯塞爾前往布魯日",
+          "desc": "SNCB 比利時國鐵，國內火車通常不用太早訂。建議從 Brussels Central 或 Midi 出發。",
+          "places": [
+            "Brussels Central Station",
+            "Bruges Station"
+          ]
+        },
+        {
+          "time": "10:30 - 11:30",
+          "type": "住宿",
+          "name": "布魯日飯店寄放行李",
+          "desc": "首選寄放在飯店；若不能寄放，可用 Brugge Station 置物櫃。",
+          "places": [
+            "Bruges Historic Centre",
+            "Bruges Station"
+          ]
+        },
+        {
+          "time": "12:00 - 14:00",
+          "type": "景點",
+          "name": "Markt 廣場與 Belfry 鐘樓",
+          "desc": "布魯日核心景點，適合慢慢拍照。是否登鐘樓視體力決定。",
+          "places": [
+            "Markt Bruges",
+            "Belfry of Bruges"
+          ]
+        },
+        {
+          "time": "14:30 - 17:00",
+          "type": "景點",
+          "name": "布魯日運河與 Rozenhoedkaai",
+          "desc": "可安排運河遊船或單純沿河散步。",
+          "places": [
+            "Rozenhoedkaai",
+            "Bruges Canals"
+          ]
+        },
+        {
+          "time": "17:30 - 19:00",
+          "type": "晚餐",
+          "name": "布魯日老城晚餐",
+          "desc": "住一晚的好處是不用急著搭車，晚餐可以慢慢吃。",
+          "places": [
+            "Bruges Historic Centre"
+          ]
+        },
+        {
+          "time": "19:30 - 21:00",
+          "type": "景點",
+          "name": "布魯日夜景散步",
+          "desc": "晚上遊客少，氣氛比較美。路線以老城核心區為主。",
+          "places": [
+            "Bruges Historic Centre"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 8",
+      "date": "8/10",
+      "title": "根特半日・回布魯塞爾",
+      "events": [
+        {
+          "time": "09:00 - 10:30",
+          "type": "交通",
+          "name": "布魯日退房，回布魯塞爾寄放行李",
+          "desc": "不建議拖行李玩根特。先回布魯塞爾飯店放行李，再輕裝去根特。",
+          "places": [
+            "Bruges Station",
+            "Brussels Central Station"
+          ]
+        },
+        {
+          "time": "11:30 - 12:15",
+          "type": "交通",
+          "name": "布魯塞爾前往根特",
+          "desc": "SNCB 火車前往 Gent-Sint-Pieters，進城可搭電車或計程車。",
+          "places": [
+            "Brussels Central Station",
+            "Gent-Sint-Pieters Station"
+          ]
+        },
+        {
+          "time": "12:45 - 14:00",
+          "type": "午餐",
+          "name": "根特老城午餐",
+          "desc": "抵達後先吃飯，再走河岸與老城。",
+          "places": [
+            "Ghent City Centre"
+          ]
+        },
+        {
+          "time": "14:00 - 16:30",
+          "type": "景點",
+          "name": "Graslei、Korenlei 與根特老城",
+          "desc": "根特比布魯日更文青，有運河和中世紀感。半日散步足夠舒服。",
+          "places": [
+            "Graslei and Korenlei",
+            "Ghent City Centre"
+          ]
+        },
+        {
+          "time": "17:00 - 18:00",
+          "type": "交通",
+          "name": "回布魯塞爾",
+          "desc": "晚上回布魯塞爾休息，隔天要跨國去科隆。",
+          "places": [
+            "Gent-Sint-Pieters Station",
+            "Brussels Central Station"
+          ]
+        },
+        {
+          "time": "18:30 - 20:00",
+          "type": "晚餐",
+          "name": "布魯塞爾輕鬆晚餐",
+          "desc": "不要排太晚，隔天中午前後搭國際火車比較順。",
+          "places": [
+            "Brussels City Centre"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 9",
+      "date": "8/11",
+      "title": "布魯塞爾前往科隆・大教堂初見",
+      "events": [
+        {
+          "time": "10:00 - 11:00",
+          "type": "住宿",
+          "name": "布魯塞爾退房",
+          "desc": "這天不用太早出發，建議訂中午前後的國際火車。",
+          "places": [
+            "Brussels City Centre"
+          ]
+        },
+        {
+          "time": "12:00 - 14:00",
+          "type": "交通",
+          "name": "布魯塞爾前往科隆",
+          "desc": "Eurostar / ICE / DB / SNCB International，建議先訂：Bruxelles-Midi / Brussel-Zuid 到 Köln Hbf。",
+          "places": [
+            "Brussels Midi Station",
+            "Köln Hauptbahnhof"
+          ]
+        },
+        {
+          "time": "14:30 - 15:30",
+          "type": "住宿",
+          "name": "抵達 Köln Hbf，飯店 Check-in",
+          "desc": "住宿建議選 Köln Hbf / Cologne Cathedral / Altstadt-Nord 附近。",
+          "places": [
+            "Köln Hauptbahnhof",
+            "Cologne City Centre"
+          ]
+        },
+        {
+          "time": "16:00 - 17:30",
+          "type": "景點",
+          "name": "科隆大教堂",
+          "desc": "車站一出來就是大教堂，抵達後可先看外觀和內部。",
+          "places": [
+            "Cologne Cathedral"
+          ]
+        },
+        {
+          "time": "17:30 - 19:00",
+          "type": "景點",
+          "name": "Hohenzollern Bridge 與萊茵河畔",
+          "desc": "適合傍晚散步、拍大教堂與河岸。",
+          "places": [
+            "Hohenzollern Bridge",
+            "Rhine River Promenade Cologne"
+          ]
+        },
+        {
+          "time": "19:00 - 20:30",
+          "type": "晚餐",
+          "name": "科隆老城晚餐",
+          "desc": "抵達日以河畔與老城為主，不再安排其他城市。",
+          "places": [
+            "Cologne Old Town"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 10",
+      "date": "8/12",
+      "title": "科隆完整一日・老城與萊茵河",
+      "events": [
+        {
+          "time": "09:30 - 11:30",
+          "type": "景點",
+          "name": "科隆大教堂深度參觀",
+          "desc": "可視體力決定是否登塔。若登塔，後面行程放慢。",
+          "places": [
+            "Cologne Cathedral"
+          ]
+        },
+        {
+          "time": "12:00 - 13:30",
+          "type": "午餐",
+          "name": "科隆老城午餐",
+          "desc": "可吃德國豬腳、香腸、馬鈴薯料理。",
+          "places": [
+            "Cologne Old Town"
+          ]
+        },
+        {
+          "time": "14:00 - 16:30",
+          "type": "景點",
+          "name": "Museum Ludwig 或巧克力博物館",
+          "desc": "喜歡輕鬆可選巧克力博物館；喜歡藝術可選 Museum Ludwig。二選一比較剛好。",
+          "places": [
+            "Museum Ludwig",
+            "Cologne Chocolate Museum"
+          ]
+        },
+        {
+          "time": "17:00 - 18:30",
+          "type": "景點",
+          "name": "萊茵河畔散步",
+          "desc": "這天完整玩科隆，不建議再塞其他城市。",
+          "places": [
+            "Rhine River Promenade Cologne"
+          ]
+        },
+        {
+          "time": "18:30 - 20:30",
+          "type": "晚餐",
+          "name": "科隆市區晚餐",
+          "desc": "住車站或大教堂附近，多數行程可步行。",
+          "places": [
+            "Cologne City Centre"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 11",
+      "date": "8/13",
+      "title": "科隆彈性日・休息與補逛",
+      "events": [
+        {
+          "time": "09:30 - 11:00",
+          "type": "早餐",
+          "name": "科隆市區悠閒早餐與散步",
+          "desc": "前後都有跨國移動，這天建議放慢。",
+          "places": [
+            "Cologne City Centre"
+          ]
+        },
+        {
+          "time": "11:30 - 14:00",
+          "type": "購物",
+          "name": "Schildergasse 購物街",
+          "desc": "可逛街、買伴手禮、喝咖啡。",
+          "places": [
+            "Schildergasse"
+          ]
+        },
+        {
+          "time": "14:30 - 18:00",
+          "type": "景點",
+          "name": "彈性選項：杜塞道夫半日或留在科隆",
+          "desc": "爸媽體力好可去杜塞道夫半日；想舒服就留在科隆休息。若去杜塞道夫，搭區域火車即可。",
+          "places": [
+            "Düsseldorf Altstadt",
+            "Cologne City Centre"
+          ]
+        },
+        {
+          "time": "18:30 - 20:30",
+          "type": "晚餐",
+          "name": "科隆最後晚餐",
+          "desc": "隔天要回 Delft，晚上不要太晚。",
+          "places": [
+            "Cologne Old Town"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 12",
+      "date": "8/14",
+      "title": "科隆回 Delft・宿舍整理",
+      "events": [
+        {
+          "time": "10:00 - 11:00",
+          "type": "住宿",
+          "name": "科隆退房",
+          "desc": "建議訂上午晚一點或中午的車，不要太趕。",
+          "places": [
+            "Cologne City Centre"
+          ]
+        },
+        {
+          "time": "11:30 - 15:30",
+          "type": "交通",
+          "name": "科隆前往 Delft",
+          "desc": "Köln Hbf 到 Delft 可經 Utrecht、Rotterdam 或 Amsterdam 轉車，建議先訂國際段。",
+          "places": [
+            "Köln Hauptbahnhof",
+            "Delft Station"
+          ]
+        },
+        {
+          "time": "16:00 - 18:00",
+          "type": "住宿",
+          "name": "回 Delft 宿舍整理",
+          "desc": "拿大行李、洗衣、整理跨國旅行用品。",
+          "places": [
+            "Delft City Centre",
+            "TU Delft"
+          ]
+        },
+        {
+          "time": "18:30 - 20:00",
+          "type": "購物",
+          "name": "簡單採買與休息",
+          "desc": "這天不要排正式景點，重點是回宿舍整理。",
+          "places": [
+            "Delft City Centre"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 13",
+      "date": "8/15",
+      "title": "Utrecht 米飛兔博物館・Delft 生活準備",
+      "events": [
+        {
+          "time": "09:00 - 10:15",
+          "type": "交通",
+          "name": "Delft 前往 Utrecht",
+          "desc": "搭 NS 火車前往 Utrecht Centraal。週六移動可行，但仍建議查即時班次。",
+          "places": [
+            "Delft Station",
+            "Utrecht Centraal"
+          ]
+        },
+        {
+          "time": "10:30 - 12:00",
+          "type": "景點",
+          "name": "Miffy Museum / Nijntje Museum",
+          "desc": "Keukenhof 8 月未開放，所以改排 Utrecht 米飛兔。需線上預訂時段票。",
+          "places": [
+            "Miffy Museum",
+            "Nijntje Museum"
+          ]
+        },
+        {
+          "time": "12:00 - 14:00",
+          "type": "午餐",
+          "name": "Utrecht 市中心午餐與散步",
+          "desc": "可順路看米飛兔紅綠燈、運河、市中心商店。",
+          "places": [
+            "Utrecht City Centre",
+            "Miffy Traffic Light"
+          ]
+        },
+        {
+          "time": "14:00 - 15:15",
+          "type": "交通",
+          "name": "返回 Delft",
+          "desc": "下午回 Delft 處理採買、洗衣與宿舍整理。",
+          "places": [
+            "Utrecht Centraal",
+            "Delft Station"
+          ]
+        },
+        {
+          "time": "15:30 - 18:00",
+          "type": "購物",
+          "name": "Delft 生活用品補買",
+          "desc": "買洗衣精、清潔用品、衛生紙、垃圾袋、簡單食材。",
+          "places": [
+            "Albert Heijn Delft",
+            "Jumbo Delft",
+            "Delft City Centre"
+          ]
+        },
+        {
+          "time": "18:30 - 20:00",
+          "type": "晚餐",
+          "name": "Delft 老城晚餐",
+          "desc": "在 Delft 輕鬆吃飯，作為旅程收尾之一。",
+          "places": [
+            "Delft City Centre"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Day 14",
+      "date": "8/16",
+      "title": "Delft 彈性日・送機或最後整理",
+      "events": [
+        {
+          "time": "09:30 - 11:30",
+          "type": "活動",
+          "name": "Delft 最後整理",
+          "desc": "確認文件、宿舍用品、交通卡、網路、銀行和學校事項。",
+          "places": [
+            "Delft City Centre",
+            "TU Delft"
+          ]
+        },
+        {
+          "time": "12:00 - 14:00",
+          "type": "景點",
+          "name": "彈性安排：Delft / 海牙輕鬆散步",
+          "desc": "若爸媽航班較晚，可安排輕鬆散步或吃飯。不建議再去遠距離景點。",
+          "places": [
+            "Delft City Centre",
+            "The Hague"
+          ]
+        },
+        {
+          "time": "14:30 - 16:30",
+          "type": "交通",
+          "name": "前往 Schiphol 送機",
+          "desc": "Delft 到 Schiphol 搭 NS 火車，依航班時間至少預留充足緩衝。",
+          "places": [
+            "Delft Station",
+            "Amsterdam Airport Schiphol"
+          ]
+        },
+        {
+          "time": "晚上",
+          "type": "住宿",
+          "name": "住宿 Delft / 行程結束",
+          "desc": "歐洲家庭旅行結束，準備迎接 Delft 新生生活。",
+          "places": [
+            "Delft City Centre"
+          ]
+        }
+      ]
+    }
+  ]
+}
