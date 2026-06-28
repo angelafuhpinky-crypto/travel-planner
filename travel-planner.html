@@ -44,6 +44,12 @@
   .trip-item-info { flex: 1; min-width: 0; }
   .trip-item-name { color: var(--white); font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .trip-item-dates { color: var(--muted); font-size: 11px; margin-top: 1px; }
+  .btn-delete-trip {
+    background: transparent; border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.55);
+    border-radius: 6px; cursor: pointer; min-width: 34px; min-height: 34px; font-size: 14px;
+    display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  }
+  .btn-delete-trip:hover { border-color: var(--coral); color: var(--coral); background: rgba(224,122,95,0.08); }
   
   .btn-add-trip {
     margin: 12px 16px; padding: 10px; background: rgba(201,168,76,0.15);
@@ -666,6 +672,28 @@ function setActiveTrip(id) {
   if (window.innerWidth <= 768) toggleSidebar();
 }
 
+function deleteTrip(id, event) {
+  if (event) event.stopPropagation();
+  if (trips.length <= 1) {
+    alert("至少要保留一個旅程。");
+    return;
+  }
+
+  const trip = trips.find(t => t.id === id);
+  if (!trip) return;
+  if (!confirm(`確定要刪除「${trip.name}」嗎？`)) return;
+
+  trips = trips.filter(t => t.id !== id);
+  if (activeTripId === id) {
+    activeTrip = trips[0];
+    activeTripId = activeTrip.id;
+  }
+  editingEventId = null;
+  mainMapInstance = null;
+  saveTravelData();
+  renderApp();
+}
+
 function renderApp() {
   const t = activeTrip;
   saveTravelData();
@@ -676,6 +704,7 @@ function renderApp() {
         <div class="trip-item-name">${esc(trip.name)}</div>
         <div class="trip-item-dates">${esc(trip.start || '未定')} → ${esc(trip.end || '未定')}</div>
       </div>
+      <button class="btn-delete-trip" onclick="deleteTrip('${esc(trip.id)}', event)" title="刪除此旅程" aria-label="刪除 ${esc(trip.name)}">🗑️</button>
     </div>`).join('');
 
   document.getElementById('trip-detail').innerHTML = `
