@@ -123,6 +123,25 @@
 
   .add-event-row { width: 100%; border: 1px dashed var(--sand); border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; color: var(--muted); background: transparent; min-height: 44px; margin-top: 8px; }
 
+  /* ── TODO TAB ── */
+  .todo-body { padding: 28px 48px 48px; max-width: 920px; }
+  .todo-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .todo-summary { color: var(--muted); font-size: 13px; }
+  .todo-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .todo-card { display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 14px; border: 1px solid var(--sand); border-radius: 10px; background: var(--white); margin-bottom: 10px; }
+  .todo-card.done { opacity: 0.68; }
+  .todo-check { width: 22px; height: 22px; margin-top: 2px; accent-color: var(--sage); }
+  .todo-main { min-width: 0; }
+  .todo-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  .todo-pill { border-radius: 999px; padding: 3px 9px; font-size: 11px; background: rgba(122,158,159,0.12); color: var(--sage); border: 1px solid rgba(122,158,159,0.22); }
+  .todo-priority-high { background: rgba(224,122,95,0.12); color: var(--coral); border-color: rgba(224,122,95,0.25); }
+  .todo-priority-medium { background: rgba(201,168,76,0.14); color: #8a6d1f; border-color: rgba(201,168,76,0.28); }
+  .todo-task { font-size: 14px; font-weight: 600; line-height: 1.45; }
+  .todo-card.done .todo-task { text-decoration: line-through; }
+  .todo-notes { color: var(--muted); font-size: 12px; line-height: 1.5; margin-top: 5px; }
+  .todo-link { display: inline-flex; margin-top: 8px; color: var(--coral); font-size: 12px; text-decoration: none; }
+  .todo-empty { color: var(--muted); font-size: 14px; padding: 20px 0; }
+
   /* ── MAP TAB ── */
   .map-body { padding: 32px 48px; height: calc(100vh - 200px); display: flex; flex-direction: column; }
   .map-frame-wrap { border-radius: 16px; overflow: hidden; border: 1px solid var(--sand); box-shadow: var(--card-shadow); flex: 1; min-height: 400px; position: relative; }
@@ -177,6 +196,13 @@
     .itinerary-body { padding: 20px 16px; }
     .itinerary-toolbar { justify-content: stretch; margin-bottom: 18px; }
     .btn-add-day, .add-event-row { width: 100%; font-size: 14px; }
+    .todo-body { padding: 20px 16px; }
+    .todo-toolbar { display: block; }
+    .todo-summary { margin-bottom: 12px; }
+    .todo-actions { display: grid; grid-template-columns: 1fr; }
+    .todo-actions button { width: 100%; }
+    .todo-card { border-radius: 8px; }
+    .todo-task { font-size: 15px; overflow-wrap: anywhere; }
     .map-body { padding: 16px; height: calc(100vh - 150px); }
     .modal { width: 94%; padding: 24px 18px; border-radius: 14px; }
     .modal-actions { justify-content: stretch; }
@@ -319,6 +345,8 @@
         <button class="btn-cancel" onclick="saveSyncSettings()">儲存設定</button>
         <button class="btn-cancel" onclick="pullSharedTrip()">從雲端載入</button>
         <button class="btn-save" onclick="pushSharedTrip()">更新到雲端</button>
+        <button class="btn-cancel" onclick="pullSheetTrip()">從 Google Sheet 載入行程/待辦</button>
+        <button class="btn-save" onclick="pushSheetTodos()">更新待辦到 Google Sheet</button>
       </div>
       <div id="sync-status" class="sync-status"></div>
     </div>
@@ -460,6 +488,16 @@ const ALL_TYPES = ["航班","交通","住宿","景點","餐廳","早餐","午餐
 
 function uid() { return Math.random().toString(36).slice(2, 9); }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || uid(); }
+
+const BUSAN_TODOS = [
+  { id:"busan-flight", done:false, priority:"高", due:"", category:"航班", task:"確認釜山來回機票與行李規定", source:"航空公司", url:"", notes:"把電子機票與訂位代號存到手機。", status:"待確認" },
+  { id:"busan-hotel", done:false, priority:"高", due:"", category:"住宿", task:"確認 Hotel Yuna Business 住宿與入住時間", source:"飯店 / 訂房平台", url:"", notes:"確認地址、入住時間、是否可寄放行李。", status:"待確認" },
+  { id:"busan-ktx", done:false, priority:"中", due:"", category:"交通", task:"確認釜山 ↔ 大邱 KTX 班次", source:"KORAIL", url:"", notes:"出發前查即時班次，必要時先訂票。", status:"待確認" },
+  { id:"busan-gyeongju", done:false, priority:"高", due:"", category:"活動", task:"確認 Klook 慶州一日遊集合資訊", source:"Klook", url:"", notes:"確認西面站集合出口、時間與憑證。", status:"待確認" },
+  { id:"busan-connectivity", done:false, priority:"中", due:"", category:"準備", task:"準備韓國網卡/eSIM 與交通卡", source:"", url:"", notes:"抵達前確認手機網路方案與交通卡加值方式。", status:"待確認" },
+  { id:"busan-docs", done:false, priority:"中", due:"", category:"文件", task:"備份護照、機票、住宿與訂單", source:"", url:"", notes:"雲端與手機離線各放一份。", status:"待確認" }
+];
 
 // ─── 完整的6天5夜行程資料 ──────────────────────────────────
 let activeTrip = {
@@ -502,7 +540,8 @@ let activeTrip = {
       { id:uid(), time:"09:30 - 10:20", type:"交通", name:"前往金海機場", places:["沙上站", "金海國際機場"] },
       { id:uid(), time:"12:15 - 13:40", type:"航班", name:"搭機返回", places:["金海國際機場"] }
     ]}
-  ]
+  ],
+  todos: BUSAN_TODOS
 };
 
 const STORAGE_KEY = "travelPlannerData.v2";
@@ -526,6 +565,68 @@ loadSyncConfig();
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+function parseTripDate(value, trip) {
+  if (!value) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const date = new Date(`${value}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+  const match = String(value).match(/^(\d{1,2})\/(\d{1,2})$/);
+  const year = String(trip?.start || '').slice(0, 4);
+  if (match && year) {
+    const date = new Date(Number(year), Number(match[1]) - 1, Number(match[2]));
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+  return null;
+}
+
+function weekdayLabel(value, trip) {
+  const date = parseTripDate(value, trip);
+  return date ? ["週日","週一","週二","週三","週四","週五","週六"][date.getDay()] : "";
+}
+
+function dayDateLabel(day, trip) {
+  const weekday = day.weekday || weekdayLabel(day.date, trip);
+  return [day.date, weekday].filter(Boolean).join(' · ');
+}
+
+function normalizeTodo(todo, index) {
+  const task = todo.task || todo.name || todo.title || "待辦事項";
+  return {
+    id: todo.id || `todo-${slug(task)}-${index + 1}`,
+    row: todo.row || "",
+    done: Boolean(todo.done || todo.completed),
+    priority: todo.priority || "中",
+    due: todo.due || todo.date || "",
+    category: todo.category || todo.type || "行前準備",
+    task,
+    source: todo.source || "",
+    url: todo.url || todo.link || "",
+    notes: todo.notes || todo.desc || "",
+    status: todo.status || (todo.done || todo.completed ? "OK" : "待確認")
+  };
+}
+
+function buildDefaultTodos(trip) {
+  const tripSlug = slug(trip.name || trip.id || "trip");
+  const defaults = [
+    ["高", "文件", "備份護照、機票、住宿與重要訂單", "把 PDF 存到手機與雲端。"],
+    ["高", "住宿", "確認住宿地址、入住時間與聯絡方式", "出發前把地址加入地圖。"],
+    ["高", "交通", "確認主要跨城市交通與票券", "包含火車、巴士、航班或接駁。"],
+    ["中", "景點門票", "確認需要預約的景點門票", "把入場時間與 QR code 存好。"],
+    ["中", "網路", "準備 eSIM / SIM 卡與離線地圖", "確認目的地可用。"],
+    ["低", "行李", "整理行李與天氣備案", "依季節補雨具、藥品、轉接頭。"]
+  ];
+  return defaults.map(([priority, category, task, notes], index) => normalizeTodo({
+    id: `${tripSlug}-default-${index + 1}`,
+    priority,
+    category,
+    task,
+    notes,
+    status: "待確認"
+  }, index));
+}
+
 function normalizeTrip(trip) {
   const clean = {
     id: trip.id || uid(),
@@ -533,11 +634,14 @@ function normalizeTrip(trip) {
     flag: trip.flag || "🌏",
     start: trip.start || "",
     end: trip.end || "",
-    days: Array.isArray(trip.days) ? trip.days : []
+    sheetTrip: trip.sheetTrip || trip.sheetId || "",
+    days: Array.isArray(trip.days) ? trip.days : [],
+    todos: Array.isArray(trip.todos) ? trip.todos : []
   };
   clean.days = clean.days.map((day, index) => ({
     label: day.label || `Day ${index + 1}`,
     date: day.date || "",
+    weekday: day.weekday || weekdayLabel(day.date || "", clean),
     title: day.title || "新的一天",
     events: Array.isArray(day.events) ? day.events.map(event => ({
       id: event.id || uid(),
@@ -548,6 +652,7 @@ function normalizeTrip(trip) {
       places: Array.isArray(event.places) ? event.places : []
     })) : []
   }));
+  clean.todos = clean.todos.length ? clean.todos.map(normalizeTodo) : (clean.id === "busan-2024" ? BUSAN_TODOS.map(normalizeTodo) : buildDefaultTodos(clean));
   return clean;
 }
 
@@ -582,7 +687,8 @@ async function loadBundledTrips() {
       const data = await response.json();
       const trip = normalizeTrip({
         ...data,
-        id: data.id || fileName.replace(/\.json$/i, "")
+        id: data.id || fileName.replace(/\.json$/i, ""),
+        sheetTrip: data.sheetTrip || (fileName.includes("nl-be-de") ? "nl-be-de-2026" : "")
       });
       const alreadyExists = trips.some(existing =>
         existing.id === trip.id ||
@@ -648,11 +754,14 @@ function applyTravelPayload(payload) {
   renderApp();
 }
 
-function getSyncUrl() {
+function getSyncUrl(params = {}) {
   const endpoint = (syncConfig.endpoint || "").trim();
   if (!endpoint) throw new Error("請先貼上同步 Web App URL。");
   const url = new URL(endpoint);
   url.searchParams.set("doc", syncConfig.docId || "family-europe-2026");
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") url.searchParams.set(key, value);
+  });
   return url;
 }
 
@@ -726,6 +835,7 @@ function renderApp() {
     </div>
     <div class="trip-tabs">
       <button class="trip-tab ${activeTab==='itinerary'?'active':''}" onclick="switchTab('itinerary')">📋 行程表</button>
+      <button class="trip-tab ${activeTab==='todos'?'active':''}" onclick="switchTab('todos')">✅ 待辦清單</button>
       <button class="trip-tab ${activeTab==='map'?'active':''}" onclick="switchTab('map')">🗺️ 總覽地圖</button>
     </div>
     <div class="tab-content ${activeTab==='itinerary'?'active':''}" id="tab-itinerary">
@@ -736,7 +846,7 @@ function renderApp() {
             <div class="day-header">
               <div class="day-badge">${esc(day.label)}</div>
               <div class="day-title-wrap">
-                <div class="day-title" id="day-title-${di}">${esc(day.date ? day.date + ' · ' : '')}${esc(day.title)}</div>
+                <div class="day-title" id="day-title-${di}">${esc(dayDateLabel(day, t) ? dayDateLabel(day, t) + ' · ' : '')}${esc(day.title)}</div>
               </div>
               <div class="day-line"></div>
               <div class="day-actions">
@@ -751,8 +861,48 @@ function renderApp() {
           </div>`).join('')}
       </div>
     </div>
+    <div class="tab-content ${activeTab==='todos'?'active':''}" id="tab-todos">
+      ${renderTodoTab(t)}
+    </div>
     <div class="tab-content ${activeTab==='map'?'active':''}" id="tab-map">
       <div class="map-body"><div class="map-frame-wrap"><div id="main-map"></div></div></div>
+    </div>`;
+}
+
+function renderTodoTab(trip) {
+  const todos = trip.todos || [];
+  const doneCount = todos.filter(todo => todo.done).length;
+  return `
+    <div class="todo-body">
+      <div class="todo-toolbar">
+        <div class="todo-summary">${doneCount} / ${todos.length} 已完成</div>
+        <div class="todo-actions">
+          <button class="btn-add-day" onclick="addTodo()">＋ 新增待辦</button>
+          <button class="btn-cancel" onclick="pullSheetTrip()">從 Sheet 載入</button>
+          <button class="btn-save" onclick="pushSheetTodos()">更新到 Sheet</button>
+        </div>
+      </div>
+      ${todos.length ? todos.map(renderTodoCard).join('') : '<div class="todo-empty">目前沒有待辦事項。</div>'}
+    </div>`;
+}
+
+function renderTodoCard(todo) {
+  const priorityClass = todo.priority === "高" ? "todo-priority-high" : (todo.priority === "中" ? "todo-priority-medium" : "");
+  return `
+    <div class="todo-card ${todo.done ? 'done' : ''}">
+      <input class="todo-check" type="checkbox" ${todo.done ? 'checked' : ''} onchange="toggleTodo('${esc(todo.id)}', this.checked)">
+      <div class="todo-main">
+        <div class="todo-meta">
+          <span class="todo-pill ${priorityClass}">${esc(todo.priority || '中')}</span>
+          ${todo.due ? `<span class="todo-pill">${esc(todo.due)}</span>` : ''}
+          <span class="todo-pill">${esc(todo.category || '待辦')}</span>
+          <span class="todo-pill">${esc(todo.status || (todo.done ? 'OK' : '待確認'))}</span>
+        </div>
+        <div class="todo-task">${esc(todo.task)}</div>
+        ${todo.notes ? `<div class="todo-notes">${esc(todo.notes)}</div>` : ''}
+        ${todo.source ? `<div class="todo-notes">來源：${esc(todo.source)}</div>` : ''}
+        ${todo.url ? `<a class="todo-link" href="${esc(todo.url)}" target="_blank">開啟連結 ↗</a>` : ''}
+      </div>
     </div>`;
 }
 
@@ -854,6 +1004,29 @@ function saveEditEvent(evId, di) {
   editingEventId = null; renderApp();
 }
 
+function toggleTodo(todoId, done) {
+  const todo = (activeTrip.todos || []).find(item => item.id === todoId);
+  if (!todo) return;
+  todo.done = done;
+  todo.status = done ? "OK" : (todo.status === "OK" ? "待確認" : todo.status || "待確認");
+  saveTravelData();
+  renderApp();
+}
+
+function addTodo() {
+  const task = prompt("待辦事項內容");
+  if (!task) return;
+  activeTrip.todos = activeTrip.todos || [];
+  activeTrip.todos.push(normalizeTodo({
+    id: `todo-${slug(task)}-${uid()}`,
+    priority: "中",
+    category: "行前準備",
+    task,
+    status: "待確認"
+  }, activeTrip.todos.length));
+  renderApp();
+}
+
 function createTrip() {
   const today = new Date().toISOString().slice(0, 10);
   const trip = normalizeTrip({
@@ -900,9 +1073,11 @@ function exportTextPlan(trip) {
     flag: trip.flag || "🌏",
     start: trip.start || "",
     end: trip.end || "",
+    sheetTrip: trip.sheetTrip || "",
     days: (trip.days || []).map(day => ({
       label: day.label || "",
       date: day.date || "",
+      weekday: day.weekday || weekdayLabel(day.date || "", trip),
       title: day.title || "",
       events: (day.events || []).map(event => ({
         time: event.time || "",
@@ -911,6 +1086,17 @@ function exportTextPlan(trip) {
         desc: event.desc || "",
         places: event.places || []
       }))
+    })),
+    todos: (trip.todos || []).map(todo => ({
+      done: Boolean(todo.done),
+      priority: todo.priority || "中",
+      due: todo.due || "",
+      category: todo.category || "",
+      task: todo.task || "",
+      source: todo.source || "",
+      url: todo.url || "",
+      notes: todo.notes || "",
+      status: todo.status || ""
     }))
   }, null, 2);
 }
@@ -926,9 +1112,11 @@ function parseTextPlan(rawText) {
     flag: data.flag || activeTrip.flag || "🌏",
     start: data.start || data.startDate || activeTrip.start || "",
     end: data.end || data.endDate || activeTrip.end || "",
+    sheetTrip: data.sheetTrip || activeTrip.sheetTrip || "",
     days: sourceDays.map((day, index) => ({
       label: day.label || `Day ${index + 1}`,
       date: day.date || "",
+      weekday: day.weekday || "",
       title: day.title || day.city || `Day ${index + 1}`,
       events: (Array.isArray(day.events) ? day.events : (Array.isArray(day.items) ? day.items : [])).map(item => ({
         id: item.id || uid(),
@@ -938,7 +1126,8 @@ function parseTextPlan(rawText) {
         desc: item.desc || item.notes || item.communication || "",
         places: Array.isArray(item.places) ? item.places : (item.location ? [item.location] : [])
       }))
-    }))
+    })),
+    todos: Array.isArray(data.todos) ? data.todos : []
   });
 
   if (!trip.days.length) throw new Error("找不到 days 陣列。");
@@ -1008,6 +1197,52 @@ async function pushSharedTrip() {
     setSyncStatus(`已更新到雲端。時間：${result.updatedAt || new Date().toLocaleString()}`);
   } catch (error) {
     setSyncStatus(`更新失敗：${error.message}。本機資料已保留，晚點可再試。`, true);
+  }
+}
+
+async function pullSheetTrip() {
+  try {
+    saveSyncSettings();
+    const sheetTrip = activeTrip.sheetTrip || (activeTrip.name.includes("荷蘭") ? "nl-be-de-2026" : "");
+    if (!sheetTrip) throw new Error("這個旅程沒有設定 Google Sheet 同步代號。");
+    setSyncStatus("正在從 Google Sheet 載入每日行程與待辦...");
+    const response = await fetch(getSyncUrl({ action: "tripData", trip: sheetTrip }).toString(), { cache: "no-store" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const result = await response.json();
+    if (result.ok === false) throw new Error(result.error || "Google Sheet 載入失敗。");
+
+    const data = result.data || {};
+    activeTrip.sheetTrip = sheetTrip;
+    if (Array.isArray(data.days) && data.days.length) activeTrip.days = data.days;
+    if (Array.isArray(data.todos)) activeTrip.todos = data.todos;
+    activeTrip = normalizeTrip(activeTrip);
+    const index = trips.findIndex(t => t.id === activeTripId);
+    if (index >= 0) trips[index] = activeTrip;
+    saveTravelData();
+    renderApp();
+    openSyncModal();
+    setSyncStatus(`已從 Google Sheet 載入：${activeTrip.days.length} 天、${activeTrip.todos.length} 個待辦。`);
+  } catch (error) {
+    setSyncStatus(`Google Sheet 載入失敗：${error.message}`, true);
+  }
+}
+
+async function pushSheetTodos() {
+  try {
+    saveSyncSettings();
+    const sheetTrip = activeTrip.sheetTrip || (activeTrip.name.includes("荷蘭") ? "nl-be-de-2026" : "");
+    if (!sheetTrip) throw new Error("這個旅程沒有設定 Google Sheet 同步代號。");
+    setSyncStatus("正在更新待辦到 Google Sheet...");
+    const response = await fetch(getSyncUrl({ action: "checklist", trip: sheetTrip }).toString(), {
+      method: "POST",
+      body: JSON.stringify({ todos: activeTrip.todos || [] })
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const result = await response.json();
+    if (result.ok === false) throw new Error(result.error || "Google Sheet 更新失敗。");
+    setSyncStatus(`已更新 ${result.updated || 0} 個待辦到 Google Sheet。`);
+  } catch (error) {
+    setSyncStatus(`Google Sheet 更新失敗：${error.message}`, true);
   }
 }
 
