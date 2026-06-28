@@ -501,9 +501,11 @@ let activeTrip = {
 
 const STORAGE_KEY = "travelPlannerData.v2";
 const SYNC_CONFIG_KEY = "travelPlannerSyncConfig.v1";
+const BUNDLED_TRIP_FILES = ["travel-planner-nl-be-de-2026.json"];
 let trips = [activeTrip];
 let activeTripId = activeTrip.id;
 let syncConfig = { endpoint: "", docId: "family-europe-2026" };
+let loadedSavedTravelData = false;
 
 // ─── 狀態與渲染 ──────────────────────────────────────────
 let activeTab = 'itinerary';
@@ -551,6 +553,7 @@ function loadTravelData() {
       activeTripId = saved.activeTripId || trips[0].id;
       activeTrip = trips.find(t => t.id === activeTripId) || trips[0];
       activeTripId = activeTrip.id;
+      loadedSavedTravelData = true;
     }
   } catch (error) {
     console.warn("Could not load saved travel data", error);
@@ -559,6 +562,44 @@ function loadTravelData() {
 
 function saveTravelData() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ trips, activeTripId }));
+}
+
+async function loadBundledTrips() {
+  const startedWithOnlyBusan = trips.length === 1 && trips[0].id === "busan-2024";
+  let addedTrip = null;
+
+  for (const fileName of BUNDLED_TRIP_FILES) {
+    try {
+      const response = await fetch(fileName, { cache: "no-store" });
+      if (!response.ok) continue;
+
+      const data = await response.json();
+      const trip = normalizeTrip({
+        ...data,
+        id: data.id || fileName.replace(/\.json$/i, "")
+      });
+      const alreadyExists = trips.some(existing =>
+        existing.id === trip.id ||
+        (existing.name === trip.name && existing.start === trip.start && existing.end === trip.end)
+      );
+
+      if (!alreadyExists) {
+        trips.push(trip);
+        addedTrip = addedTrip || trip;
+      }
+    } catch (error) {
+      console.warn(`Could not load bundled trip ${fileName}`, error);
+    }
+  }
+
+  if (addedTrip) {
+    if (!loadedSavedTravelData || startedWithOnlyBusan) {
+      activeTrip = addedTrip;
+      activeTripId = addedTrip.id;
+    }
+    saveTravelData();
+    renderApp();
+  }
 }
 
 function loadSyncConfig() {
@@ -993,6 +1034,7 @@ function closePlaceModal() { document.getElementById('modal-place').classList.re
 
 // 啟動
 renderApp();
+loadBundledTrips();
 </script>
 </body>
 </html>
