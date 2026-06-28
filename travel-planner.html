@@ -590,6 +590,15 @@ function dayDateLabel(day, trip) {
   return [day.date, weekday].filter(Boolean).join(' · ');
 }
 
+function inferSheetTrip(trip) {
+  if (trip?.sheetTrip || trip?.sheetId) return trip.sheetTrip || trip.sheetId;
+  const name = String(trip?.name || "");
+  const id = String(trip?.id || "");
+  if (id === "busan-2024" || name.includes("釜山")) return "busan-2024";
+  if (id.includes("nl-be-de") || name.includes("荷蘭") || name.includes("比利時") || name.includes("德國")) return "nl-be-de-2026";
+  return "";
+}
+
 function normalizeTodo(todo, index) {
   const task = todo.task || todo.name || todo.title || "待辦事項";
   return {
@@ -634,7 +643,7 @@ function normalizeTrip(trip) {
     flag: trip.flag || "🌏",
     start: trip.start || "",
     end: trip.end || "",
-    sheetTrip: trip.sheetTrip || trip.sheetId || "",
+    sheetTrip: inferSheetTrip(trip),
     days: Array.isArray(trip.days) ? trip.days : [],
     todos: Array.isArray(trip.todos) ? trip.todos : []
   };
@@ -1203,7 +1212,7 @@ async function pushSharedTrip() {
 async function pullSheetTrip() {
   try {
     saveSyncSettings();
-    const sheetTrip = activeTrip.sheetTrip || (activeTrip.name.includes("荷蘭") ? "nl-be-de-2026" : "");
+    const sheetTrip = inferSheetTrip(activeTrip);
     if (!sheetTrip) throw new Error("這個旅程沒有設定 Google Sheet 同步代號。");
     setSyncStatus("正在從 Google Sheet 載入每日行程與待辦...");
     const response = await fetch(getSyncUrl({ action: "tripData", trip: sheetTrip }).toString(), { cache: "no-store" });
@@ -1230,7 +1239,7 @@ async function pullSheetTrip() {
 async function pushSheetTodos() {
   try {
     saveSyncSettings();
-    const sheetTrip = activeTrip.sheetTrip || (activeTrip.name.includes("荷蘭") ? "nl-be-de-2026" : "");
+    const sheetTrip = inferSheetTrip(activeTrip);
     if (!sheetTrip) throw new Error("這個旅程沒有設定 Google Sheet 同步代號。");
     setSyncStatus("正在更新待辦到 Google Sheet...");
     const response = await fetch(getSyncUrl({ action: "checklist", trip: sheetTrip }).toString(), {
