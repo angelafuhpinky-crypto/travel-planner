@@ -451,16 +451,22 @@ const PLACES_DB = {
   "IKEA Delft": { type:"購物", addr:"Olof Palmestraat 1, Delft, Netherlands", lat:52.0037, lng:4.3816 },
   "Albert Heijn Delft": { type:"購物", addr:"Delft, Netherlands", lat:52.0112, lng:4.3579 },
   "Jumbo Delft": { type:"購物", addr:"Delft, Netherlands", lat:52.0101, lng:4.3580 },
+  "Zaandijk Zaanse Schans": { type:"交通", addr:"Zaandijk Zaanse Schans Station, Netherlands", lat:52.4740, lng:4.8041 },
+  "Zaanse Schans": { type:"景點", addr:"Zaanse Schans, Zaandam, Netherlands", lat:52.4738, lng:4.8160 },
 
   "The Hague": { type:"景點", addr:"The Hague, Netherlands", lat:52.0705, lng:4.3007 },
+  "Den Haag Centraal": { type:"交通", addr:"Den Haag Centraal, The Hague, Netherlands", lat:52.0810, lng:4.3240 },
   "Binnenhof": { type:"景點", addr:"Binnenhof, The Hague, Netherlands", lat:52.0796, lng:4.3138 },
   "Mauritshuis": { type:"景點", addr:"Plein 29, The Hague, Netherlands", lat:52.0800, lng:4.3144 },
   "Scheveningen Beach": { type:"景點", addr:"Scheveningen Beach, The Hague, Netherlands", lat:52.1100, lng:4.2750 },
 
   "Rotterdam Centraal": { type:"交通", addr:"Rotterdam Centraal, Rotterdam, Netherlands", lat:51.9244, lng:4.4699 },
   "Rotterdam City Centre": { type:"景點", addr:"Rotterdam Centrum, Netherlands", lat:51.9225, lng:4.4792 },
+  "Rotterdam Erasmusbrug": { type:"交通", addr:"Erasmusbrug, Rotterdam, Netherlands", lat:51.9090, lng:4.4866 },
   "Markthal Rotterdam": { type:"景點", addr:"Dominee Jan Scharpstraat 298, Rotterdam, Netherlands", lat:51.9201, lng:4.4864 },
   "Cube Houses Rotterdam": { type:"景點", addr:"Overblaak 70, Rotterdam, Netherlands", lat:51.9203, lng:4.4908 },
+  "Kinderdijk": { type:"景點", addr:"Kinderdijk, Netherlands", lat:51.8850, lng:4.6387 },
+  "Kinderdijk Windmills": { type:"景點", addr:"Nederwaard 1, Kinderdijk, Netherlands", lat:51.8826, lng:4.6389 },
 
   "Brussels Midi Station": { type:"交通", addr:"Bruxelles-Midi / Brussel-Zuid, Brussels, Belgium", lat:50.8359, lng:4.3365 },
   "Brussels Central Station": { type:"交通", addr:"Brussels Central Station, Brussels, Belgium", lat:50.8455, lng:4.3572 },
@@ -491,7 +497,13 @@ const PLACES_DB = {
   "Cologne Chocolate Museum": { type:"景點", addr:"Am Schokoladenmuseum 1A, Cologne, Germany", lat:50.9319, lng:6.9644 },
   "Cologne City Centre": { type:"景點", addr:"Cologne City Centre, Germany", lat:50.9375, lng:6.9603 },
   "Schildergasse": { type:"購物", addr:"Schildergasse, Cologne, Germany", lat:50.9360, lng:6.9536 },
-  "Düsseldorf Altstadt": { type:"景點", addr:"Düsseldorf Altstadt, Germany", lat:51.2277, lng:6.7735 }
+  "Düsseldorf Altstadt": { type:"景點", addr:"Düsseldorf Altstadt, Germany", lat:51.2277, lng:6.7735 },
+
+  "Utrecht Centraal": { type:"交通", addr:"Utrecht Centraal, Utrecht, Netherlands", lat:52.0894, lng:5.1103 },
+  "Utrecht City Centre": { type:"景點", addr:"Utrecht City Centre, Netherlands", lat:52.0907, lng:5.1214 },
+  "Miffy Museum": { type:"景點", addr:"Agnietenstraat 2, Utrecht, Netherlands", lat:52.0839, lng:5.1268 },
+  "Nijntje Museum": { type:"景點", addr:"Agnietenstraat 2, Utrecht, Netherlands", lat:52.0839, lng:5.1268 },
+  "Miffy Traffic Light": { type:"景點", addr:"Sint Jacobsstraat, Utrecht, Netherlands", lat:52.0935, lng:5.1136 }
 };
 
 const TYPE_ICON = { "交通":"🚇","住宿":"🏨","餐廳":"🍽️","景點":"🏛️","購物":"🛍️","咖啡廳":"☕","集合":"📍","航班":"✈️","早餐":"🥚","午餐":"🍜","晚餐":"🍖","活動":"📌" };
@@ -576,6 +588,11 @@ loadSyncConfig();
 
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function resetMainMap() {
+  if (!mainMapInstance) return;
+  mainMapInstance.remove();
+  mainMapInstance = null;
+}
 
 function parseTripDate(value, trip) {
   if (!value) return null;
@@ -797,7 +814,7 @@ function applyTravelPayload(payload) {
   activeTripId = activeTrip.id;
   editingEventId = null;
   editingTodoId = null;
-  mainMapInstance = null;
+  resetMainMap();
   saveTravelData();
   renderApp();
 }
@@ -832,7 +849,7 @@ function setActiveTrip(id) {
   activeTripId = activeTrip.id;
   editingEventId = null;
   editingTodoId = null;
-  mainMapInstance = null;
+  resetMainMap();
   renderApp();
   if (window.innerWidth <= 768) toggleSidebar();
 }
@@ -856,13 +873,14 @@ function deleteTrip(id, event) {
   dedupeTrips(activeTripId);
   editingEventId = null;
   editingTodoId = null;
-  mainMapInstance = null;
+  resetMainMap();
   saveTravelData();
   renderApp();
 }
 
 function renderApp() {
   const t = activeTrip;
+  resetMainMap();
   saveTravelData();
   document.getElementById('trip-list').innerHTML = trips.map(trip => `
     <div class="trip-item ${trip.id === activeTripId ? 'active' : ''}" onclick="setActiveTrip('${esc(trip.id)}')">
@@ -925,6 +943,7 @@ function renderApp() {
     <div class="tab-content ${activeTab==='map'?'active':''}" id="tab-map">
       <div class="map-body"><div class="map-frame-wrap"><div id="main-map"></div></div></div>
     </div>`;
+  if (activeTab === 'map') setTimeout(initMainMap, 100);
 }
 
 function renderTodoTab(trip) {
