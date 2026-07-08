@@ -930,7 +930,41 @@ function tripIdentity(trip) {
 }
 
 function tripScore(trip) {
-  return (trip.days || []).length * 100 + (trip.todos || []).length + (trip.sheetTrip ? 10 : 0);
+  const events = (trip.days || []).flatMap(day => day.events || []);
+  const places = events.flatMap(event => event.places || []);
+  return (trip.days || []).length * 100 + events.length * 10 + places.length + (trip.todos || []).length + (trip.sheetTrip ? 10 : 0);
+}
+
+function eventMergeKey(event) {
+  return [event.time || "", event.name || ""].join(" | ").trim().toLowerCase();
+}
+
+function mergeBundledTripPlaces(existingTrip, bundledTrip) {
+  const merged = normalizeTrip(existingTrip);
+  const bundled = normalizeTrip(bundledTrip);
+  merged.sheetTrip = merged.sheetTrip || bundled.sheetTrip;
+
+  bundled.days.forEach((bundledDay, dayIndex) => {
+    const targetDay = merged.days.find(day =>
+      (day.label && day.label === bundledDay.label) ||
+      (day.date && day.date === bundledDay.date && day.title === bundledDay.title)
+    ) || merged.days[dayIndex];
+
+    if (!targetDay || !Array.isArray(targetDay.events)) return;
+
+    bundledDay.events.forEach(bundledEvent => {
+      const bundledKey = eventMergeKey(bundledEvent);
+      const targetEvent = targetDay.events.find(event => eventMergeKey(event) === bundledKey) ||
+        targetDay.events.find(event => event.name === bundledEvent.name);
+
+      if (!targetEvent) return;
+
+      const places = new Set([...(targetEvent.places || []), ...(bundledEvent.places || [])]);
+      targetEvent.places = Array.from(places).filter(Boolean);
+    });
+  });
+
+  return merged;
 }
 
 function dedupeTrips(preferredActiveId = activeTripId) {
@@ -989,6 +1023,12 @@ async function loadBundledTrips() {
       if (!alreadyExists) {
         trips.push(trip);
         addedTrip = addedTrip || trip;
+      } else {
+        const existingIndex = trips.findIndex(existing => tripIdentity(existing) === tripIdentity(trip));
+        const mergedTrip = mergeBundledTripPlaces(trips[existingIndex], trip);
+        if (tripScore(mergedTrip) > tripScore(trips[existingIndex])) {
+          trips[existingIndex] = mergedTrip;
+        }
       }
     } catch (error) {
       console.warn(`Could not load bundled trip ${fileName}`, error);
@@ -1634,17 +1674,33 @@ function initMainMap() {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(mainMapInstance);
 
   const bounds = [];
+  const markersByCoordinate = new Map();
   activeTrip.days.forEach(day => {
     day.events.forEach(ev => {
       (ev.places || []).forEach(pName => {
         const p = PLACES_DB[pName];
         if(p && p.lat) {
-          L.marker([p.lat, p.lng]).addTo(mainMapInstance).bindPopup(`<b>${pName}</b><br>${p.type}`);
-          bounds.push([p.lat, p.lng]);
+          const key = `${p.lat},${p.lng}`;
+          if (!markersByCoordinate.has(key)) {
+            markersByCoordinate.set(key, { lat: p.lat, lng: p.lng, places: [] });
+            bounds.push([p.lat, p.lng]);
+          }
+          markersByCoordinate.get(key).places.push({ name: pName, type: p.type });
         }
       });
     });
   });
+
+  markersByCoordinate.forEach(marker => {
+    const uniquePlaces = Array.from(
+      new Map(marker.places.map(place => [place.name, place])).values()
+    );
+    const popup = uniquePlaces
+      .map(place => `<b>${place.name}</b><br>${place.type}`)
+      .join('<hr style="border:none;border-top:1px solid #d8ead6;margin:6px 0;">');
+    L.marker([marker.lat, marker.lng]).addTo(mainMapInstance).bindPopup(popup);
+  });
+
   if(bounds.length > 0) mainMapInstance.fitBounds(bounds, { padding: [30, 30] });
 }
 
