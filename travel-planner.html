@@ -1705,24 +1705,17 @@ function initMainMap() {
 }
 
 function openPlace(name) {
-  const p = PLACES_DB[name] || { type: "未收錄", addr: "自訂地點，無座標", lat: 35.1578, lng: 129.0591 };
-  document.getElementById('place-modal-type').textContent = p.type;
-  document.getElementById('place-modal-name').textContent = name;
-  document.getElementById('place-modal-address').textContent = p.addr;
-  document.getElementById('place-modal-gmaps').href = `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
-  document.getElementById('modal-place').classList.add('open');
+  const place = PLACES_DB[name];
+  const hasCoordinates = place &&
+    Number.isFinite(Number(place.lat)) &&
+    Number.isFinite(Number(place.lng));
+  const query = hasCoordinates
+    ? `${place.lat},${place.lng}`
+    : [name, activeTrip?.name].filter(Boolean).join(' ');
+  const googleMapsUrl =
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
-  setTimeout(() => {
-    if(!modalMapInstance) {
-      modalMapInstance = L.map('place-modal-map').setView([p.lat, p.lng], 15);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(modalMapInstance);
-      modalMarker = L.marker([p.lat, p.lng]).addTo(modalMapInstance);
-    } else {
-      modalMapInstance.setView([p.lat, p.lng], 15);
-      modalMarker.setLatLng([p.lat, p.lng]);
-      modalMapInstance.invalidateSize();
-    }
-  }, 200);
+  window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
 }
 function closePlaceModal() { document.getElementById('modal-place').classList.remove('open'); }
 
@@ -1732,3 +1725,4 @@ loadBundledTrips();
 </script>
 </body>
 </html>
+
